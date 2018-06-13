@@ -11,21 +11,11 @@ public class EchoClientHandler extends SimpleChannelInboundHandler<ByteBuf> {
 	@Override
 	protected void channelRead0(ChannelHandlerContext ctx, ByteBuf msg) throws Exception {
 		// TODO Auto-generated method stub
-		System.out.println("client received: "+msg.toString(CharsetUtil.UTF_8));
+		System.out.println("client received message:"+msg.getCharSequence(0, msg.readableBytes(), CharsetUtil.UTF_8));
 	}
 
-	@Override
-	public void channelActive(ChannelHandlerContext ctx) throws Exception {
-		// TODO Auto-generated method stub
-		ctx.writeAndFlush(Unpooled.copiedBuffer("Netty rockes",CharsetUtil.UTF_8));
-		
-	}
-
-	@Override
-	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-		// TODO Auto-generated method stub
-		cause.printStackTrace();
-		ctx.close();
+	public static void main(String[] args) {
+		System.out.println("\n".getBytes()[0]);
 	}
 
 }

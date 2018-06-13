@@ -4,37 +4,97 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.channel.group.ChannelGroup;
+import io.netty.channel.group.DefaultChannelGroup;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.util.CharsetUtil;
+import io.netty.util.concurrent.GlobalEventExecutor;
 
 @Sharable
 public class EchoServerHandler extends ChannelInboundHandlerAdapter {
 
+	public static  ChannelGroup group=new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
+	public static ChannelHandlerContext context=null;
+	
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
 		// TODO Auto-generated method stub
-		ByteBuf byteBuf=(ByteBuf)msg;
-		System.out.println("Server received:"+byteBuf.toString(CharsetUtil.UTF_8));
-		ctx.write(byteBuf);
-//		super.channelRead(ctx, msg);
+		ByteBuf receive=(ByteBuf)msg;
+		
+		System.out.println("server received message:"+receive.readCharSequence(receive.readableBytes(), CharsetUtil.UTF_8));
+		ByteBuf buf=Unpooled.buffer(1000);
+		buf.writeBytes("server received your message!".getBytes());		
+		ctx.writeAndFlush(buf);
 	}
 
 	@Override
-	public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
+	public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
 		// TODO Auto-generated method stub
-		ctx.writeAndFlush(Unpooled.EMPTY_BUFFER)
-		.addListener(ChannelFutureListener.CLOSE);
-		//super.channelReadComplete(ctx);
+		System.out.println("channel registered!");
+		super.channelRegistered(ctx);
+	}
+
+	@Override
+	public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
+		// TODO Auto-generated method stub
+		System.out.println("channel unregistered!");
+		super.channelUnregistered(ctx);
+	}
+
+	@Override
+	public void channelActive(ChannelHandlerContext ctx) throws Exception {
+		// TODO Auto-generated method stub
+		this.context=ctx;
+		System.out.println("channel active!");
+		super.channelActive(ctx);
+	}
+
+	@Override
+	public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+		// TODO Auto-generated method stub
+		System.out.println("channel inactive!");
+		super.channelInactive(ctx);
 	}
 
 	@Override
 	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
 		// TODO Auto-generated method stub
 		//super.exceptionCaught(ctx, cause);
-		cause.printStackTrace();
-		ctx.close();
+		System.out.println(cause);
 	}
 
+	@Override
+	public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
+		// TODO Auto-generated method stub
+		System.out.println("channel handler added!");
+		Channel incoming=ctx.channel();
+		for(Channel channel:group) {
+			ByteBuf buf=channel.alloc().buffer(100);
+			buf.writeBytes(("attention:new member add:"+channel).getBytes());
+			channel.writeAndFlush(buf);
+		}
+		group.add(incoming);
+		//super.handlerAdded(ctx);
+	}
+
+	@Override
+	public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
+		// TODO Auto-generated method stub
+		System.out.println("channel handler removed!");
+		Channel incoming=ctx.channel();
+		for(Channel channel:group) {
+			ByteBuf buf=channel.alloc().buffer(100);
+			buf.writeBytes(("attention:a member left:"+channel).getBytes());
+			channel.writeAndFlush(buf);
+		}
+		group.remove(incoming);
+		//super.handlerRemoved(ctx);
+	}
 	
+	
+
+
 }

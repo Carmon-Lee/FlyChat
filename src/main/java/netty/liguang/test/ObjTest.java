@@ -10,7 +10,8 @@ public class ObjTest{
 		testArray();
 		separat();
 		testOjb();
-		
+		ObjTest objTest=new ObjTest();
+		objTest.pt();
 	}
 
 	public static void separat() {
@@ -40,6 +41,10 @@ public class ObjTest{
 		for(int a:ints) {
 			System.out.println(a);
 		}
+	}
+	
+	public void pt() {
+		System.out.println(this);
 	}
 	
 }

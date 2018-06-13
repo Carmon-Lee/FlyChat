@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+	PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+	<settings>
+		<setting name="logImpl" value="LOG4J"/>
+		<!-- <setting name="cacheEnabled" value="true"/> -->
+	</settings>
+	<typeAliases>
+		<typeAlias alias="SysRole" type="org.liguang.ch2.model.SysRole"/>
+		<typeAlias alias="SysUser" type="org.liguang.ch2.model.SysUser"/>
+		<typeAlias alias="SysUserRole" type="org.liguang.ch2.model.SysUserRole"/>
+		<typeAlias alias="SysPrivilege" type="org.liguang.ch2.model.SysPrivilege"/>
+		<typeAlias alias="SysRolePrivilege" type="org.liguang.ch2.model.SysRolePrivilege"/>				
+		<package name="org.liguang.simple.model"/>		
+	</typeAliases>
+	
+	<environments default="development">
+		<environment id="development">
+			<transactionManager type="JDBC">
+				<property name="" value=""/>
+			</transactionManager>
+			<dataSource type="UNPOOLED">
+				<property name="driver" value="com.mysql.jdbc.Driver"/>
+				<property name="url" value="jdbc:mysql://localhost:3306/mybatis"/>
+				<property name="username" value="root"/>
+				<property name="password" value="liguang"/>
+			</dataSource>				
+		</environment>
+	</environments>
+	
+	<mappers>
+		<!-- <mapper resource="org/liguang/ch2/mapper/CountryMapper.xml"/> -->
+		<package name="org.liguang.ch2.mapper"/>
+	</mappers>
+</configuration>

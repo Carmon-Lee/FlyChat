@@ -1,15 +1,24 @@
 package netty.liguang.communicate;
 
 import java.net.InetSocketAddress;
+import java.util.Scanner;
 
 import io.netty.bootstrap.Bootstrap;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelPipeline;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.DelimiterBasedFrameDecoder;
+import io.netty.handler.codec.Delimiters;
+import io.netty.handler.codec.string.StringDecoder;
+import io.netty.handler.codec.string.StringEncoder;
 
 public class EchoClient {
 	private final String host;
@@ -24,14 +33,32 @@ public class EchoClient {
 		
 		try {
 			Bootstrap b = new Bootstrap();
-			b.group(group).channel(NioSocketChannel.class).remoteAddress(new InetSocketAddress(host, port))
-					.handler(new ChannelInitializer<SocketChannel>() {
-						public void initChannel(SocketChannel ch) throws Exception {
-							ch.pipeline().addLast(new EchoClientHandler());
-						}
-					});
-			ChannelFuture future=b.connect().sync();
-			future.channel().closeFuture().sync();
+			System.out.println("Client created, establishing connection with Server...");
+			b.group(group)
+			.channel(NioSocketChannel.class)
+			.handler(new ChannelInitializer<SocketChannel>() {
+					public void initChannel(SocketChannel ch) throws Exception {
+						
+						ChannelPipeline pipeline=ch.pipeline();
+						pipeline.addLast(new EchoClientHandler());
+					}
+				});
+			Scanner scanner=new Scanner(System.in);
+			System.out.println("Ready to sync...");
+			Channel channel=b.connect("localhost",8081).sync().channel();
+		
+			while (true) {
+				String input=scanner.nextLine();
+				if (input.equals("end")) {
+					break;
+				}
+				ByteBuf buf=Unpooled.buffer(1000);
+				buf.writeBytes(input.getBytes());
+				channel.writeAndFlush(buf);
+				//System.out.println(input);
+			}
+			channel.closeFuture().sync();
+			System.out.println("Finishing...");
 		} finally {
 			// TODO: handle finally clause
 			group.shutdownGracefully().sync();
