@@ -49,6 +49,8 @@ public class EchoServer {
 				@Override
 				public void initChannel(SocketChannel ch) {
 					ch.pipeline()
+					.addLast("decoder", new StringDecoder())
+					.addLast("encoder", new StringEncoder())
 					.addLast("server",new EchoServerHandler());				
 				}
 			});

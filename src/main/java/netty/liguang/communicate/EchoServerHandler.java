@@ -22,12 +22,10 @@ public class EchoServerHandler extends ChannelInboundHandlerAdapter {
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
 		// TODO Auto-generated method stub
-		ByteBuf receive=(ByteBuf)msg;
+		String receive=(String)msg;
 		
-		System.out.println("server received message:"+receive.readCharSequence(receive.readableBytes(), CharsetUtil.UTF_8));
-		ByteBuf buf=Unpooled.buffer(1000);
-		buf.writeBytes("server received your message!".getBytes());		
-		ctx.writeAndFlush(buf);
+		System.out.println("server received message:"+receive);
+		group.writeAndFlush(ctx.channel()+" sent a message:"+receive);
 	}
 
 	@Override
@@ -72,9 +70,9 @@ public class EchoServerHandler extends ChannelInboundHandlerAdapter {
 		System.out.println("channel handler added!");
 		Channel incoming=ctx.channel();
 		for(Channel channel:group) {
-			ByteBuf buf=channel.alloc().buffer(100);
-			buf.writeBytes(("attention:new member add:"+channel).getBytes());
-			channel.writeAndFlush(buf);
+//			ByteBuf buf=channel.alloc().buffer(100);
+//			buf.writeBytes("attention:new member add:"+channel);
+			channel.writeAndFlush("attention:new member add:"+channel);
 		}
 		group.add(incoming);
 		//super.handlerAdded(ctx);
@@ -86,9 +84,9 @@ public class EchoServerHandler extends ChannelInboundHandlerAdapter {
 		System.out.println("channel handler removed!");
 		Channel incoming=ctx.channel();
 		for(Channel channel:group) {
-			ByteBuf buf=channel.alloc().buffer(100);
-			buf.writeBytes(("attention:a member left:"+channel).getBytes());
-			channel.writeAndFlush(buf);
+//			ByteBuf buf=channel.alloc().buffer(100);
+//			buf.writeBytes(("attention:a member left:"+channel).getBytes());
+			channel.writeAndFlush("attention:a member left:"+channel);
 		}
 		group.remove(incoming);
 		//super.handlerRemoved(ctx);

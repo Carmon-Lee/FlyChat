@@ -40,7 +40,10 @@ public class EchoClient {
 					public void initChannel(SocketChannel ch) throws Exception {
 						
 						ChannelPipeline pipeline=ch.pipeline();
-						pipeline.addLast(new EchoClientHandler());
+						pipeline
+						.addLast("decoder", new StringDecoder())
+						.addLast("encoder", new StringEncoder())
+						.addLast(new EchoClientHandler());
 					}
 				});
 			Scanner scanner=new Scanner(System.in);
