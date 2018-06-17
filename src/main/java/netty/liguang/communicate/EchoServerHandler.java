@@ -10,6 +10,8 @@ import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler.Sharable;
+import io.netty.util.Attribute;
+import io.netty.util.AttributeKey;
 import io.netty.util.CharsetUtil;
 import io.netty.util.concurrent.GlobalEventExecutor;
 
@@ -18,14 +20,18 @@ public class EchoServerHandler extends ChannelInboundHandlerAdapter {
 
 	public static  ChannelGroup group=new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
 	public static ChannelHandlerContext context=null;
-	
+	public static AttributeKey<String> id_key=AttributeKey.newInstance("username1");
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
 		// TODO Auto-generated method stub
+		String username0=ctx.channel().attr(id_key).get();
+		if (username0==null || "".equals(username0)) {
+			ctx.channel().attr(id_key).setIfAbsent((String)msg);
+		}
 		String receive=(String)msg;
-		
-		System.out.println("server received message:"+receive);
-		group.writeAndFlush(ctx.channel()+" sent a message:"+receive);
+		Attribute<String> username=ctx.channel().attr(id_key);
+		System.out.println(username+" sent a message:"+receive);
+		group.writeAndFlush("hello,"+username+" what can I do for you");
 	}
 
 	@Override
@@ -46,6 +52,12 @@ public class EchoServerHandler extends ChannelInboundHandlerAdapter {
 	public void channelActive(ChannelHandlerContext ctx) throws Exception {
 		// TODO Auto-generated method stub
 		this.context=ctx;
+		/*Attribute<String> attribute=ctx.channel().attr(id_key);
+		String username=attribute.get();
+		if (username==null) {
+			attribute.setIfAbsent("liguang");
+		}
+		System.out.println("attribute:"+attribute);*/
 		System.out.println("channel active!");
 		super.channelActive(ctx);
 	}

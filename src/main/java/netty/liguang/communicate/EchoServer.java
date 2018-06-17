@@ -18,11 +18,12 @@ import io.netty.handler.codec.DelimiterBasedFrameDecoder;
 import io.netty.handler.codec.Delimiters;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
+import io.netty.util.AttributeKey;
 
 public class EchoServer {
 
 	private final int port;
-
+	
 	public EchoServer(int port) {
 		super();
 		this.port = port;
@@ -53,7 +54,7 @@ public class EchoServer {
 					.addLast("encoder", new StringEncoder())
 					.addLast("server",new EchoServerHandler());				
 				}
-			});
+			}); 
 			
 			ChannelFuture future = b.bind().sync();
 			Channel channel=future.channel();

@@ -12,6 +12,14 @@ public class ObjTest{
 		testOjb();
 		ObjTest objTest=new ObjTest();
 		objTest.pt();
+		ObjTest objTest2=new ObjTest() {{			
+		}};
+		ObjTest objTest4=new ObjTest() {{			
+		}};
+		ObjTest objTest3=new ObjTest();
+		System.out.println(objTest2);
+		System.out.println(objTest3);
+		System.out.println(objTest4);
 	}
 
 	public static void separat() {

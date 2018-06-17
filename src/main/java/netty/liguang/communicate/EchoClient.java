@@ -19,10 +19,12 @@ import io.netty.handler.codec.DelimiterBasedFrameDecoder;
 import io.netty.handler.codec.Delimiters;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
+import io.netty.util.AttributeKey;
 
 public class EchoClient {
 	private final String host;
 	private final int port;
+	
 	public EchoClient(String host, int port) {
 		super();
 		this.host = host;
@@ -46,6 +48,7 @@ public class EchoClient {
 						.addLast(new EchoClientHandler());
 					}
 				});
+			
 			Scanner scanner=new Scanner(System.in);
 			System.out.println("Ready to sync...");
 			Channel channel=b.connect("localhost",8081).sync().channel();
@@ -57,7 +60,7 @@ public class EchoClient {
 				}
 				ByteBuf buf=Unpooled.buffer(1000);
 				buf.writeBytes(input.getBytes());
-				channel.writeAndFlush(buf);
+				channel.writeAndFlush(channel.attr(EchoClientHandler.id_key).get()+" sent a message:"+buf);
 				//System.out.println(input);
 			}
 			channel.closeFuture().sync();
