@@ -12,14 +12,11 @@ import io.netty.util.CharsetUtil;
 
 public class EchoClientHandler extends SimpleChannelInboundHandler<String> {
 
-	public static AttributeKey<String> id_key=AttributeKey.newInstance("username1");
+	public static AttributeKey<String> id_key=AttributeKey.newInstance("username");
 	
 	@Override
 	protected void channelRead0(ChannelHandlerContext ctx, String msg) throws Exception {
-		// TODO Auto-generated method stub
-		//Attribute<String> username=ctx.channel().attr(id_key);
 		System.out.println(msg);
-		//ctx.writeAndFlush(username+" sent a message:"+msg);
 	}
 
 	@Override
@@ -28,14 +25,18 @@ public class EchoClientHandler extends SimpleChannelInboundHandler<String> {
 		super.channelRegistered(ctx);
 		Scanner scannerName=new Scanner(System.in);
 		System.out.println("input your name to login!");
-		String input=scannerName.nextLine();
-		while (input=="") {
-			input=scannerName.nextLine();
+		String userName=scannerName.nextLine();
+		while (userName=="") {
+			userName=scannerName.nextLine();
+		}
+		System.out.println("input your password!");
+		String password=scannerName.nextLine();
+		while (password=="") {
+			password=scannerName.nextLine();
 		}
 		Attribute<String> attribute=ctx.channel().attr(id_key);
-		String username=attribute.get();
-		if (username==null) {
-			attribute.setIfAbsent(input);
+		if (attribute.get()==null) {
+			attribute.setIfAbsent(userName);
 		}
 	}
 

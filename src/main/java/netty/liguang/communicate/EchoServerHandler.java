@@ -20,10 +20,9 @@ public class EchoServerHandler extends ChannelInboundHandlerAdapter {
 
 	public static  ChannelGroup group=new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
 	public static ChannelHandlerContext context=null;
-	public static AttributeKey<String> id_key=AttributeKey.newInstance("username1");
+	public static AttributeKey<String> id_key=AttributeKey.newInstance("username");
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-		// TODO Auto-generated method stub
 		String username0=ctx.channel().attr(id_key).get();
 		if (username0==null || "".equals(username0)) {
 			ctx.channel().attr(id_key).setIfAbsent((String)msg);
@@ -36,43 +35,31 @@ public class EchoServerHandler extends ChannelInboundHandlerAdapter {
 
 	@Override
 	public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
-		// TODO Auto-generated method stub
 		System.out.println("channel registered!");
 		super.channelRegistered(ctx);
 	}
 
 	@Override
 	public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
-		// TODO Auto-generated method stub
 		System.out.println("channel unregistered!");
 		super.channelUnregistered(ctx);
 	}
 
 	@Override
 	public void channelActive(ChannelHandlerContext ctx) throws Exception {
-		// TODO Auto-generated method stub
 		this.context=ctx;
-		/*Attribute<String> attribute=ctx.channel().attr(id_key);
-		String username=attribute.get();
-		if (username==null) {
-			attribute.setIfAbsent("liguang");
-		}
-		System.out.println("attribute:"+attribute);*/
 		System.out.println("channel active!");
 		super.channelActive(ctx);
 	}
 
 	@Override
 	public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-		// TODO Auto-generated method stub
 		System.out.println("channel inactive!");
 		super.channelInactive(ctx);
 	}
 
 	@Override
 	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-		// TODO Auto-generated method stub
-		//super.exceptionCaught(ctx, cause);
 		System.out.println(cause);
 	}
 

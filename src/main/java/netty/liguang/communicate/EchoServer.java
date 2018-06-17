@@ -41,10 +41,9 @@ public class EchoServer {
 		EventLoopGroup workergroup=new NioEventLoopGroup();
 		try {
 			ServerBootstrap b = new ServerBootstrap();
-			//
 			System.out.println("Server started, waiting for connection...");
-			b.group(bossgroup,workergroup).
-			channel(NioServerSocketChannel.class)
+			b.group(bossgroup,workergroup)
+			.channel(NioServerSocketChannel.class)
 			.localAddress(new InetSocketAddress(port))
 			.childHandler(new ChannelInitializer<SocketChannel>() {
 				@Override
