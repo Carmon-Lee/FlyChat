@@ -52,14 +52,14 @@ public class EchoClient {
 			Scanner scanner=new Scanner(System.in);
 			System.out.println("Ready to sync...");
 			Channel channel=b.connect("localhost",port).sync().channel();
-		
+					
 			while (true) {
-				String input=scanner.nextLine();
-				if (input.equals("end")) {
+				String input0=scanner.nextLine();
+				if (input0.equals("end")) {
 					break;
 				}
 				ByteBuf buf=Unpooled.buffer(1000);
-				buf.writeBytes(input.getBytes());
+				buf.writeBytes(input0.getBytes());
 				channel.writeAndFlush(channel.attr(EchoClientHandler.id_key).get()+" sent a message:"+buf);
 				//System.out.println(input);
 			}

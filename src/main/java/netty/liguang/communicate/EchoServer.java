@@ -58,13 +58,16 @@ public class EchoServer {
 			
 			ChannelFuture future = b.bind().sync();
 			Channel channel=future.channel();
+			EchoServerHandler handler=(EchoServerHandler)channel.pipeline().get("server");
+			
+			
+			
 			for(int i=0;i<100;i++) {
-				EchoServerHandler handler=(EchoServerHandler)channel.pipeline().get("server");
 				
 				Scanner scanner=new Scanner(System.in);
 				ByteBuf buf=channel.alloc().buffer(100);
-				String input=scanner.nextLine();
-				buf.writeBytes(("message from server: "+input).getBytes());
+				String input0=scanner.nextLine();
+				buf.writeBytes(("message from server: "+input0).getBytes());
 				handler.context.writeAndFlush(buf);
 			}
 			future.channel().closeFuture().sync();

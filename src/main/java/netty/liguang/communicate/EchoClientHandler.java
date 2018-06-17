@@ -1,5 +1,7 @@
 package netty.liguang.communicate;
 
+import java.util.Scanner;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
@@ -24,10 +26,16 @@ public class EchoClientHandler extends SimpleChannelInboundHandler<String> {
 	public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
 		// TODO Auto-generated method stub
 		super.channelRegistered(ctx);
+		Scanner scannerName=new Scanner(System.in);
+		System.out.println("input your name to login!");
+		String input=scannerName.nextLine();
+		while (input=="") {
+			input=scannerName.nextLine();
+		}
 		Attribute<String> attribute=ctx.channel().attr(id_key);
 		String username=attribute.get();
 		if (username==null) {
-			attribute.setIfAbsent("liguang");
+			attribute.setIfAbsent(input);
 		}
 	}
 
