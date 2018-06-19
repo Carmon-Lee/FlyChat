@@ -2,6 +2,7 @@ package netty.liguang.communicate;
 
 import java.net.InetSocketAddress;
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
@@ -24,6 +25,7 @@ import io.netty.util.AttributeKey;
 public class EchoClient {
 	private final String host;
 	private static final int port=8082;
+	public static int onlineCount=0;
 	
 	public EchoClient(String host) {
 		super();
@@ -39,8 +41,7 @@ public class EchoClient {
 			b.group(group)
 			.channel(NioSocketChannel.class)
 			.handler(new ChannelInitializer<SocketChannel>() {
-					public void initChannel(SocketChannel ch) throws Exception {
-						
+					public void initChannel(SocketChannel ch) throws Exception {						
 						ChannelPipeline pipeline=ch.pipeline();
 						pipeline
 						.addLast("decoder", new StringDecoder())
@@ -52,8 +53,13 @@ public class EchoClient {
 			Scanner scanner=new Scanner(System.in);
 			System.out.println("Ready to sync...");
 			Channel channel=b.connect("localhost",port).sync().channel();
-					
-			while (true) {
+			//sleeps until there is at least one user online;
+			System.out.println("No online user available,please wait!");
+			for(;;) {
+				if (onlineCount>1) break;
+				TimeUnit.MILLISECONDS.sleep(500);
+			}
+			for(;;) {
 				String input0=scanner.nextLine();
 				if (input0.equals("end")) {
 					break;

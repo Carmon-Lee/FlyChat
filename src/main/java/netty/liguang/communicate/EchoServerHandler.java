@@ -14,11 +14,13 @@ import io.netty.util.Attribute;
 import io.netty.util.AttributeKey;
 import io.netty.util.CharsetUtil;
 import io.netty.util.concurrent.GlobalEventExecutor;
+import io.netty.util.internal.StringUtil;
 
 @Sharable
 public class EchoServerHandler extends ChannelInboundHandlerAdapter {
 
-	public static  ChannelGroup group=new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
+	// online users
+	public static  ChannelGroup onlineUsers=new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
 	public static ChannelHandlerContext context=null;
 	//username attribute, used to store the username after login
 	public static AttributeKey<String> id_key=AttributeKey.newInstance("username");
@@ -26,13 +28,18 @@ public class EchoServerHandler extends ChannelInboundHandlerAdapter {
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
 		String username0=ctx.channel().attr(id_key).get();
-		if (username0==null || "".equals(username0)) {
+		if (StringUtil.isNullOrEmpty(username0)) {
 			ctx.channel().attr(id_key).setIfAbsent((String)msg);
 		}
 		String receive=(String)msg;
 		Attribute<String> username=ctx.channel().attr(id_key);
 		System.out.println(username+" sent a message:"+receive);
-		group.writeAndFlush("hello,"+username+" what can I do for you");
+		StringBuilder sb=new StringBuilder();
+		sb.append(onlineUsers.size()+"\n");
+		onlineUsers.forEach(t->{
+			sb.append(t.attr(id_key)+"\n");
+			});
+		onlineUsers.writeAndFlush(sb.toString());
 	}
 
 
@@ -46,7 +53,7 @@ public class EchoServerHandler extends ChannelInboundHandlerAdapter {
 
 	@Override
 	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-		System.out.println(cause);
+		cause.printStackTrace();
 	}
 
 	@Override
@@ -54,10 +61,10 @@ public class EchoServerHandler extends ChannelInboundHandlerAdapter {
 		// TODO Auto-generated method stub
 		System.out.println("channel handler added!");
 		Channel incoming=ctx.channel();
-		for(Channel channel:group) {
+		for(Channel channel:onlineUsers) {
 			channel.writeAndFlush("attention:new member add:"+channel);
 		}
-		group.add(incoming);
+		onlineUsers.add(incoming);
 		//super.handlerAdded(ctx);
 	}
 
@@ -66,10 +73,10 @@ public class EchoServerHandler extends ChannelInboundHandlerAdapter {
 		// TODO Auto-generated method stub
 		System.out.println("channel handler removed!");
 		Channel incoming=ctx.channel();
-		for(Channel channel:group) {
+		for(Channel channel:onlineUsers) {
 			channel.writeAndFlush("attention:a member left:"+channel);
 		}
-		group.remove(incoming);
+		onlineUsers.remove(incoming);
 		//super.handlerRemoved(ctx);
 	}
 
