@@ -20,7 +20,9 @@ public class EchoServerHandler extends ChannelInboundHandlerAdapter {
 
 	public static  ChannelGroup group=new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
 	public static ChannelHandlerContext context=null;
+	//username attribute, used to store the username after login
 	public static AttributeKey<String> id_key=AttributeKey.newInstance("username");
+	
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
 		String username0=ctx.channel().attr(id_key).get();
@@ -33,29 +35,13 @@ public class EchoServerHandler extends ChannelInboundHandlerAdapter {
 		group.writeAndFlush("hello,"+username+" what can I do for you");
 	}
 
-	@Override
-	public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
-		System.out.println("channel registered!");
-		super.channelRegistered(ctx);
-	}
-
-	@Override
-	public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
-		System.out.println("channel unregistered!");
-		super.channelUnregistered(ctx);
-	}
 
 	@Override
 	public void channelActive(ChannelHandlerContext ctx) throws Exception {
+		// store ChannelHandlerContext in the handler context for further usage
 		this.context=ctx;
 		System.out.println("channel active!");
 		super.channelActive(ctx);
-	}
-
-	@Override
-	public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-		System.out.println("channel inactive!");
-		super.channelInactive(ctx);
 	}
 
 	@Override
@@ -69,8 +55,6 @@ public class EchoServerHandler extends ChannelInboundHandlerAdapter {
 		System.out.println("channel handler added!");
 		Channel incoming=ctx.channel();
 		for(Channel channel:group) {
-//			ByteBuf buf=channel.alloc().buffer(100);
-//			buf.writeBytes("attention:new member add:"+channel);
 			channel.writeAndFlush("attention:new member add:"+channel);
 		}
 		group.add(incoming);
@@ -83,15 +67,10 @@ public class EchoServerHandler extends ChannelInboundHandlerAdapter {
 		System.out.println("channel handler removed!");
 		Channel incoming=ctx.channel();
 		for(Channel channel:group) {
-//			ByteBuf buf=channel.alloc().buffer(100);
-//			buf.writeBytes(("attention:a member left:"+channel).getBytes());
 			channel.writeAndFlush("attention:a member left:"+channel);
 		}
 		group.remove(incoming);
 		//super.handlerRemoved(ctx);
 	}
-	
-	
-
 
 }

@@ -1,5 +1,7 @@
 package netty.liguang.communicate;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 import io.netty.buffer.ByteBuf;
@@ -21,22 +23,11 @@ public class EchoClientHandler extends SimpleChannelInboundHandler<String> {
 
 	@Override
 	public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
-		// TODO Auto-generated method stub
 		super.channelRegistered(ctx);
-		Scanner scannerName=new Scanner(System.in);
-		System.out.println("input your name to login!");
-		String userName=scannerName.nextLine();
-		while (userName=="") {
-			userName=scannerName.nextLine();
-		}
-		System.out.println("input your password!");
-		String password=scannerName.nextLine();
-		while (password=="") {
-			password=scannerName.nextLine();
-		}
+		
 		Attribute<String> attribute=ctx.channel().attr(id_key);
 		if (attribute.get()==null) {
-			attribute.setIfAbsent(userName);
+			attribute.setIfAbsent(login());
 		}
 	}
 
@@ -46,9 +37,39 @@ public class EchoClientHandler extends SimpleChannelInboundHandler<String> {
 		super.channelActive(ctx);
 		ctx.writeAndFlush(ctx.channel().attr(id_key).get());
 	}
+	
+	/**
+	 * user login; check the username and password until true
+	 * @return the correct username
+	 */
+	private String login() {
+		Map<String, String> loginResult=new HashMap<String,String>();
+		String username;
+		String password;
+		for(;;) {
+			username=inputVar("username");
+			password=inputVar("password");
+			if(username.equals("liguang") && password.equals("liguang")) break;
+			else System.out.println("Wrong username and password match, please try again!");
+		}
+		return username;
+	}
+	
+	private String inputVar(String varName) {
+		Scanner scanner=new Scanner(System.in);
+		System.out.println("Input your "+varName+":");
+		String returnVar=scanner.nextLine();
+		while (returnVar.equals("")) {
+			System.out.println("Input your "+varName+":");
+			returnVar=scanner.nextLine();
+		}
+		return returnVar;
+	}
 
 	public static void main(String[] args) {
 		System.out.println("\n".getBytes()[0]);
+		EchoClientHandler clientHandler=new EchoClientHandler();
+		clientHandler.login();
 	}
 
 }
