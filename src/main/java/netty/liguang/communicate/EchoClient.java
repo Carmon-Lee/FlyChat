@@ -23,13 +23,13 @@ import io.netty.util.AttributeKey;
 
 public class EchoClient {
 	private final String host;
-	private final int port;
+	private static final int port=8082;
 	
-	public EchoClient(String host, int port) {
+	public EchoClient(String host) {
 		super();
 		this.host = host;
-		this.port = port;
 	}
+	
 	public void start() throws Exception{
 		EventLoopGroup group=new NioEventLoopGroup();
 		
@@ -51,7 +51,7 @@ public class EchoClient {
 			
 			Scanner scanner=new Scanner(System.in);
 			System.out.println("Ready to sync...");
-			Channel channel=b.connect("localhost",8081).sync().channel();
+			Channel channel=b.connect("localhost",port).sync().channel();
 		
 			while (true) {
 				String input=scanner.nextLine();
@@ -72,7 +72,6 @@ public class EchoClient {
 	}
 	public static void main(String[] args) throws Exception{
 		String host="localhost";
-		int port=8081;
-		new EchoClient(host, port).start();
+		new EchoClient(host).start();
 	}
 }

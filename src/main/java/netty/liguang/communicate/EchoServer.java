@@ -31,7 +31,7 @@ public class EchoServer {
 	
 	
 	public static void main(String[] args) throws Exception{
-		new EchoServer(8081).start();
+		new EchoServer(8082).start();
 	}
 	
 	public void start() throws Exception{
