@@ -24,12 +24,19 @@ import io.netty.util.AttributeKey;
 
 public class EchoClient {
 	private final String host;
-	private static final int port=8082;
+	private static int port;
 	public static int onlineCount=0;
 	
 	public EchoClient(String host) {
-		super();
+		super();		
 		this.host = host;
+		this.port=8080;
+	}
+	
+	public EchoClient(String host,int port) {
+		super();		
+		this.host = host;
+		this.port=port;
 	}
 	
 	public void start() throws Exception{
@@ -77,7 +84,9 @@ public class EchoClient {
 		}
 	}
 	public static void main(String[] args) throws Exception{
-		String host="localhost";
-		new EchoClient(host).start();
+		String host=NettyProperties.getString("clientHost");
+		int port=NettyProperties.getInt("port");
+		
+		new EchoClient(host,port).start();
 	}
 }

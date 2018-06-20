@@ -31,7 +31,7 @@ public class EchoServer {
 	
 	
 	public static void main(String[] args) throws Exception{
-		new EchoServer(8082).start();
+		new EchoServer(NettyProperties.getInt("port")).start();
 	}
 	
 	public void start() throws Exception{
@@ -58,11 +58,8 @@ public class EchoServer {
 			ChannelFuture future = b.bind().sync();
 			Channel channel=future.channel();
 			EchoServerHandler handler=(EchoServerHandler)channel.pipeline().get("server");
-			
-			
-			
-			for(int i=0;i<100;i++) {
-				
+									
+			for(int i=0;i<100;i++) {				
 				Scanner scanner=new Scanner(System.in);
 				ByteBuf buf=channel.alloc().buffer(100);
 				String input0=scanner.nextLine();
@@ -71,8 +68,7 @@ public class EchoServer {
 			}
 			future.channel().closeFuture().sync();
 		} finally {
-			// TODO: handle finally clause
-			
+			// TODO: handle finally clause			
 		}
 	}
 }
