@@ -30,6 +30,7 @@ public class EchoServer {
 	}
 	
 	public static void main(String[] args) throws Exception{
+		System.out.println(NettyProperties.getString("test"));
 		new EchoServer(NettyProperties.getInt("port")).start();
 	}
 	
