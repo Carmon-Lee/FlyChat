@@ -12,7 +12,7 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 @Configuration
 @EnableWebMvc
-@ComponentScan("netty.servlet.Chat")
+@ComponentScan("netty.liguang.servlet")
 public class WebConfig implements WebMvcConfigurer{
 
 	static {
