@@ -1,4 +1,4 @@
-package netty.liguang.myconstant;
+package netty.learn.myconstant;
 
 public class MyConstant<T extends MyConstant<T>> {
 	

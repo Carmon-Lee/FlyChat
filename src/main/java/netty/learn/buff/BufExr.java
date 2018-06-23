@@ -1,4 +1,4 @@
-package netty.liguang.buff;
+package netty.learn.buff;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;

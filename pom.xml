@@ -26,6 +26,14 @@
 			<artifactId>spring-web</artifactId>
 			<version>5.0.6.RELEASE</version>
 		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.springframework/spring-webmvc -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<version>5.0.6.RELEASE</version>
+		</dependency>
+
 	</dependencies>
 
 

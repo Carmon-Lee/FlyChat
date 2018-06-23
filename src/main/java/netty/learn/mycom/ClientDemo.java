@@ -1,4 +1,4 @@
-package netty.liguang.mycom;
+package netty.learn.mycom;
 
 import io.netty.util.AttributeKey;
 import io.netty.util.AttributeMap;
