@@ -86,6 +86,12 @@ public class EchoClientHandler extends SimpleChannelInboundHandler<String> {
 		return returnVar;
 	}
 
+	@Override
+	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+		// TODO Auto-generated method stub
+		cause.printStackTrace();
+	}
+
 //	public static void main(String[] args) {
 //		System.out.println("\n".getBytes()[0]);
 //		EchoClientHandler clientHandler=new EchoClientHandler();

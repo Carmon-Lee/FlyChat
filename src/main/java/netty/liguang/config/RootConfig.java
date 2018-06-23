@@ -6,36 +6,33 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
-//@Configuration
-//@ComponentScan(basePackages= {"netty"},excludeFilters= {
-		//@Filter(type=FilterType.ANNOTATION,value=EnableWebMvc.class)
-	//	})
+import netty.liguang.communicate.EchoServer;
+import netty.liguang.communicate.NettyProperties;
+
+@Configuration
+@ComponentScan(basePackages= {"netty"},excludeFilters= {
+		@Filter(type=FilterType.ANNOTATION,value=EnableWebMvc.class)
+		})
+@PropertySource(value= {"classpath:config.properties"})
+@EnableAsync
 public class RootConfig {
 
 	static {
-		System.out.println("RootConfig running!");
-	}
-	@Value("test")
-	private String pass;
-	@Bean
-	public User user() {
-		return new User(pass);
+		Thread thread=new Thread(()-> {
+			EchoServer server=new EchoServer(NettyProperties.getInt("port"));
+			try {
+				server.start();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		});
+		thread.start();
 	}
 }
 
-class User{
-	private String name="liguang";
 
-	public User(String name) {
-		super();
-		this.name = name;
-	}
-
-	@Override
-	public String toString() {
-		return "User [name=" + name + "]";
-	}
-	
-}

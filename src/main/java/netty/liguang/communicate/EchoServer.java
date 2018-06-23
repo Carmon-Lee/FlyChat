@@ -3,6 +3,8 @@ package netty.liguang.communicate;
 import java.net.InetSocketAddress;
 import java.util.Scanner;
 
+import org.springframework.scheduling.annotation.Async;
+
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
@@ -23,7 +25,7 @@ import io.netty.util.AttributeKey;
 public class EchoServer {
 
 	private final int port;
-	
+	private boolean started=false;
 	public EchoServer(int port) {
 		super();
 		this.port = port;
@@ -34,6 +36,7 @@ public class EchoServer {
 		new EchoServer(NettyProperties.getInt("port")).start();
 	}
 	
+	@Async
 	public void start() throws Exception{
 		final EchoServerHandler serverHandler=new EchoServerHandler();
 		
@@ -41,7 +44,8 @@ public class EchoServer {
 		EventLoopGroup workergroup=new NioEventLoopGroup();
 		try {
 			ServerBootstrap b = new ServerBootstrap();
-			System.out.println("Server started, waiting for connection...");
+			System.out.println("Server started at port:"+port);
+			started=true;
 			b.group(bossgroup,workergroup)
 			.channel(NioServerSocketChannel.class)
 			.localAddress(new InetSocketAddress(port))
